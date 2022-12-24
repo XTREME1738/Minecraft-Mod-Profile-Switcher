@@ -1,0 +1,57 @@
+﻿<Window x:Class="Minecraft_Profile_Switcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Minecraft Mod Profile Switcher" Height="250" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="Resources/icon.ico">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="275"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="ProfileComboBox" SelectionChanged="ProfileComboBox_SelectionChanged" Grid.Column="0" Margin="0,2,0,0"/>
+                <Button x:Name="AddButton" Click="AddButton_Click" Grid.Column="1" Margin="2,0" >
+                    <Image Source="Resources/add.png"></Image>
+                </Button>
+                <Button x:Name="EditButton" Click="EditButton_Click" Grid.Column="2" Margin="2,0">
+                    <Image Source="Resources/edit_profile.png"></Image>
+                </Button>
+                <Button x:Name="DeleteButton" Click="DeleteButton_Click" Grid.Column="3" Margin="2,0">
+                    <Image Source="Resources/delete.png"></Image>
+                </Button>
+            </Grid>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0, 5, 0, 0">
+            <Button x:Name="ActivateButton" Margin="5,0" Click="ActivateButton_Click" Height="25">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Resources/use.png"></Image>
+                    <TextBlock x:Name="ActivateButtonLabel" Margin="5,0,0,0">Activate</TextBlock>
+                </StackPanel>
+            </Button>
+            <Button x:Name="ManageModsButton" Margin="5,0" Click="ManageModsButton_Click" Height="25">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Resources/edit_mods.png"></Image>
+                    <TextBlock Margin="5,0,0,0">Manage Mods</TextBlock>
+                </StackPanel>
+            </Button>
+            <Button x:Name="OpenProfileDirectoryButton" Margin="5,0" Click="OpenProfileDirectory_Click" Height="25">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Resources/open.png"></Image>
+                    <TextBlock Margin="5,0,0,0">Open Profile Directory</TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        <Label x:Name="ActiveProfileLabel" Content="Active Profile: None" Grid.Row="3" HorizontalAlignment="Center"/>
+    </Grid>
+</Window>

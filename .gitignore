@@ -1,0 +1,9 @@
+﻿bin/Debug
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+*.suo
+*.user
+*.userprefs
+*.sln.DotSettings.user

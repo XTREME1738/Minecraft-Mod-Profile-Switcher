@@ -1,0 +1,33 @@
+﻿<Window x:Class="Minecraft_Profile_Switcher.ModDownloaderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="CurseForge Mods" Height="450" Width="950">
+    <Grid>
+        <ListView x:Name="ModListView" SelectionChanged="ModListView_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Mod Name" DisplayMemberBinding="{Binding Name}" Width="200" />
+                    <GridViewColumn Header="Mod Description" DisplayMemberBinding="{Binding Description}" Width="328" />
+                    <GridViewColumn Header="Mod Version" DisplayMemberBinding="{Binding Version}" Width="130" />
+                    <GridViewColumn Header="Mod Downloads" DisplayMemberBinding="{Binding Downloads}" Width="150" />
+                    <GridViewColumn Header="Install Mod" Width="120">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Width="80" Click="InstallButton_Click" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10, 5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="Resources/use.png" />
+                                        <TextBlock Text="Install" Margin="5,0,0,0"/>
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+    </Grid>
+</Window>

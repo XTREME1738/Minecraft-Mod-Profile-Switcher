@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Mod Manager" Height="400" Width="640" MinWidth="700" Icon="Resources/icon.ico" Closing="ModManagerWindow_Closing">
+        Title="Mod Manager" Height="400" Width="900" MinWidth="700" Icon="Resources/icon.ico" Closing="ModManagerWindow_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
@@ -30,6 +30,12 @@
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Resources/add.png" />
                     <TextBlock Text="Add JAR/ZIP" Margin="5,0,0,0"/>
+                </StackPanel>
+            </Button>
+            <Button Click="CurseDownloader_Click" ToolTip="Download Mod(s) From CurseForge" Margin="5, 0, 0, 0">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Resources/curseforge.png" />
+                    <TextBlock Text="Mod Downloader" Margin="5,0,0,0"/>
                 </StackPanel>
             </Button>
             <Button x:Name="DeleteModButton" Click="DeleteModButton_Click" ToolTip="Delete Selected Mod" Margin="5, 0, 0, 0" IsEnabled="False">

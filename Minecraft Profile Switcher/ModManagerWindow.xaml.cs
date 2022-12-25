@@ -8,19 +8,18 @@ using System.Windows.Controls;
 using Ionic.Zip;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using static Minecraft_Profile_Switcher.Utilities;
 
 namespace Minecraft_Profile_Switcher;
 
 public class ModItem : INotifyPropertyChanged
 {
-    private string _modName;
-    private string _modVersion;
-    private string _modGameVersion;
-    private string _modPath;
     private bool _enabled;
-
-    public event PropertyChangedEventHandler PropertyChanged;
+    private string _modGameVersion;
+    private string _modName;
+    private string _modPath;
+    private string _modVersion;
 
     public string ModPath
     {
@@ -31,7 +30,7 @@ public class ModItem : INotifyPropertyChanged
             OnPropertyChanged("ModPath");
         }
     }
-    
+
     public string ModName
     {
         get => _modName;
@@ -54,7 +53,7 @@ public class ModItem : INotifyPropertyChanged
 
     public string ModGameVersion
     {
-        get => _modGameVersion; 
+        get => _modGameVersion;
         set
         {
             _modGameVersion = value;
@@ -72,6 +71,8 @@ public class ModItem : INotifyPropertyChanged
         }
     }
 
+    public event PropertyChangedEventHandler PropertyChanged;
+
     private void OnPropertyChanged(string name)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -83,8 +84,10 @@ public partial class ModManagerWindow
     private readonly Dictionary<string, (dynamic, string)> _modList;
     private readonly string _profilePath;
     private readonly string _profileVersion;
+    private readonly string _profileVersionMain;
     private readonly string _tmpPath;
     private readonly MainWindow _window;
+    private ModItem _selectedItem;
 
     public ModManagerWindow(string profilePath, string profileName, MainWindow window)
     {
@@ -93,21 +96,24 @@ public partial class ModManagerWindow
         _tmpPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "ModProfileSwitcher", "tmp", profileName);
         _modList = new Dictionary<string, (dynamic, string)>();
-        LoadMods();
         _profileVersion = File.ReadAllText(Path.Combine(profilePath, ".version"));
+        var lastPeriodIndex = _profileVersion.LastIndexOf('.');
+        if (lastPeriodIndex >= 0) _profileVersionMain = _profileVersion.Remove(lastPeriodIndex);
         ProfileGameVersionTextBox.Text =
             "Profile Game Version: " + _profileVersion;
         ProfileNameTextBox.Text =
             "Profile Name: " + profileName;
         _window = window;
         window.ManageModsButton.IsEnabled = false;
+        LoadMods();
     }
 
     private void ModListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        _selectedItem = (ModItem)ModListView.SelectedItem;
         DeleteModButton.IsEnabled = ModListView.SelectedItem != null;
-        EnableModButton.IsEnabled = ModListView.SelectedItem != null && !((ModItem)ModListView.SelectedItem).Enabled;
-        DisableModButton.IsEnabled = ModListView.SelectedItem != null && ((ModItem)ModListView.SelectedItem).Enabled;
+        EnableModButton.IsEnabled = ModListView.SelectedItem != null && !_selectedItem.Enabled;
+        DisableModButton.IsEnabled = ModListView.SelectedItem != null && _selectedItem.Enabled;
     }
 
     private static string ReadZip(string modFile, string modTmpDir)
@@ -116,12 +122,57 @@ public partial class ModManagerWindow
         var zip = ZipFile.Read(modFile);
         foreach (var item in zip.Entries)
         {
-            if (item.FileName != "mcmod.info") continue;
+            if (!item.FileName.Contains("mcmod.info")) continue;
             item.Extract(modTmpDir);
             jsonString = File.ReadAllText(Path.Combine(modTmpDir, item.FileName));
         }
+
         zip.Dispose();
         return jsonString;
+    }
+
+    private List<string> ReadZipVerAlt(string modFile, string modTmpDir)
+    {
+        var zip = ZipFile.Read(modFile);
+        var version = "";
+        var gameVersion = "";
+        var returnInfo = new List<string>();
+        foreach (var item in zip.Entries)
+        {
+            if (!item.FileName.Contains("fml_cache_annotation.json")) continue;
+            item.Extract(modTmpDir);
+            var jsonString = File.ReadAllText(Path.Combine(modTmpDir, item.FileName));
+            dynamic jsonObject = JsonConvert.DeserializeObject(jsonString);
+            if (jsonObject == null)
+            {
+                version = "???";
+                gameVersion = "???";
+                returnInfo.Add(version);
+                returnInfo.Add(gameVersion);
+                zip.Dispose();
+                return returnInfo;
+            }
+
+            var obj = JObject.Parse(jsonString);
+            foreach (var property in obj)
+            {
+                MessageBox.Show(_profileVersion);
+                version = property.Value != null
+                    ? jsonObject[property.Key]["annotations"][0]["values"]["version"]["value"].ToString()
+                    : "???";
+                gameVersion = property.Value != null
+                    ? jsonObject[property.Key]["annotations"][0]["values"]["acceptedMinecraftVersions"]["value"]
+                        .ToString()
+                    : "???";
+                if (version == null) continue;
+                returnInfo.Add(version);
+                returnInfo.Add(gameVersion);
+                break;
+            }
+        }
+
+        zip.Dispose();
+        return returnInfo;
     }
 
     private void LoadMods()
@@ -134,7 +185,8 @@ public partial class ModManagerWindow
         var modFiles = Directory.GetFiles(_profilePath);
         foreach (var modFile in modFiles)
         {
-            if (!modFile.EndsWith(".jar") && !modFile.EndsWith(".jar.disabled")) continue;
+            if (!modFile.EndsWith(".jar") && !modFile.EndsWith(".jar.disabled") && !modFile.EndsWith(".zip") &&
+                !modFile.EndsWith(".zip.disabled")) continue;
             var disabled = modFile.EndsWith(".disabled");
             var modFileName = Path.GetFileName(modFile);
             var modTmpDir = Path.Combine(_tmpPath, modFileName);
@@ -142,7 +194,14 @@ public partial class ModManagerWindow
             Directory.CreateDirectory(modTmpDir);
             var jsonString = ReadZip(modFile, modTmpDir);
             dynamic jsonObject = JsonConvert.DeserializeObject(jsonString);
-            if (jsonObject == null) continue;
+            if (jsonObject == null)
+            {
+                MessageBox.Show("Mod: " + modFileName +
+                                ".\nDoes not contain a valid \"mcmod.info\".\nThe mod has not been added to the list, it may be incompatible.",
+                    "Incompatible Mod", MessageBoxButton.OK, MessageBoxImage.Error);
+                continue;
+            }
+
             dynamic jsonArray;
             try
             {
@@ -159,6 +218,13 @@ public partial class ModManagerWindow
             var modGameVersion = jsonArray.ToString().Contains("mcversion")
                 ? jsonArray["mcversion"].ToString()
                 : "???";
+            if (modVersion == "${version}")
+            {
+                var modVersions = ReadZipVerAlt(modFile, modTmpDir);
+                modVersion = modVersions[0];
+                modGameVersion = modVersions[1].Replace("[", "").Replace("]", "");
+            }
+            modVersion = modVersion.Replace(_profileVersion + "-", "");
             _modList.Add(modId, (modVersion, modFile));
             var modItem = new ModItem
             {
@@ -193,6 +259,7 @@ public partial class ModManagerWindow
         var jsonArray = jsonObject[0];
         if (jsonArray.ToString().Contains("modList")) jsonArray = jsonArray["modList"][0];
         var modVersion = jsonArray.ToString().Contains("version") ? jsonArray["version"].ToString() : "???";
+        if (modVersion == "${version}") modVersion = ReadZipVerAlt(modFilePath, modTmpDir);
         var modGameVersion = jsonArray.ToString().Contains("mcversion")
             ? jsonArray["mcversion"].ToString()
             : "???";
@@ -200,16 +267,21 @@ public partial class ModManagerWindow
         if (_modList.ContainsKey(modId))
         {
             var values = _modList[modId];
-            var result = MessageBox.Show("A mod with that id already exists would you like to overwrite it?\nCurrent Mod Version: " + values.Item1 + ".\nNew Mod Version: " + modVersion, "Continue?",
+            var result = MessageBox.Show(
+                "A mod with that id already exists would you like to overwrite it?\nCurrent Mod Version: " +
+                values.Item1 + ".\nNew Mod Version: " + modVersion, "Continue?",
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No) return;
             File.Delete(values.Item2);
         }
-        if (File.ReadAllText(Path.Combine(_profilePath, ".version")) != modGameVersion)
+
+        if (!modGameVersion.Contains(_profileVersionMain))
         {
             var result = MessageBox.Show(
-                "Mod: " + modFileName + " does not have the same game version it may be incompatible.\nMod Game Version: " +
-                modGameVersion + ".\nProfile Version: " + _profileVersion +  "Would you like to continue adding the mod?", "Incompatible Mod",
+                "Mod: " + modFileName +
+                " does not have the same game version it may be incompatible.\nMod Game Version: " +
+                modGameVersion + ".\nProfile Version: " + _profileVersion +
+                "Would you like to continue adding the mod?", "Incompatible Mod",
                 MessageBoxButton.YesNo, MessageBoxImage.Hand);
             if (result == MessageBoxResult.No) return;
         }
@@ -226,7 +298,8 @@ public partial class ModManagerWindow
         }
         catch (IOException)
         {
-            MessageBox.Show("The file is open in another program.", "No Permission", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("The file is open in another program.", "No Permission", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
     }
 
@@ -244,12 +317,11 @@ public partial class ModManagerWindow
 
     private void DeleteModButton_Click(object sender, RoutedEventArgs e)
     {
-        var modItem = (ModItem)ModListView.SelectedItem;
-        var modPath = modItem.ModPath;
+        var modPath = _selectedItem.ModPath;
         if (File.Exists(modPath))
         {
             File.Delete(modPath);
-            ModListView.Items.Remove(modItem);
+            ModListView.Items.Remove(_selectedItem);
             return;
         }
 
@@ -271,28 +343,9 @@ public partial class ModManagerWindow
 
     private void EnableModButton_Click(object sender, RoutedEventArgs e)
     {
-        var mod = (ModItem)ModListView.SelectedItem;
         try
         {
-            File.Move(mod.ModPath, mod.ModPath.Replace(".disabled", ""));
-        }
-        catch (IOException)
-        {
-            MessageBox.Show("The file is open in another program.", "No Permission", MessageBoxButton.OK, MessageBoxImage.Error);
-            return;
-        }
-        mod.Enabled = true;
-        mod.ModPath = mod.ModPath.Replace(".disabled", "");
-        EnableModButton.IsEnabled = false;
-        DisableModButton.IsEnabled = true;
-    }
-    
-    private void DisableModButton_Click(object sender, RoutedEventArgs e)
-    {
-        var mod = (ModItem)ModListView.SelectedItem;
-        try
-        {
-            File.Move(mod.ModPath, mod.ModPath + ".disabled");
+            File.Move(_selectedItem.ModPath, _selectedItem.ModPath.Replace(".disabled", ""));
         }
         catch (IOException)
         {
@@ -300,8 +353,28 @@ public partial class ModManagerWindow
                 MessageBoxImage.Error);
             return;
         }
-        mod.ModPath += ".disabled";
-        mod.Enabled = false;
+
+        _selectedItem.Enabled = true;
+        _selectedItem.ModPath = _selectedItem.ModPath.Replace(".disabled", "");
+        EnableModButton.IsEnabled = false;
+        DisableModButton.IsEnabled = true;
+    }
+
+    private void DisableModButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            File.Move(_selectedItem.ModPath, _selectedItem.ModPath + ".disabled");
+        }
+        catch (IOException)
+        {
+            MessageBox.Show("The file is open in another program.", "No Permission", MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            return;
+        }
+
+        _selectedItem.ModPath += ".disabled";
+        _selectedItem.Enabled = false;
         DisableModButton.IsEnabled = false;
         EnableModButton.IsEnabled = true;
     }
@@ -314,5 +387,10 @@ public partial class ModManagerWindow
     private void ModManagerWindow_Closing(object sender, CancelEventArgs e)
     {
         _window.ManageModsButton.IsEnabled = true;
+    }
+
+    private void CurseDownloader_Click(object sender, RoutedEventArgs e)
+    {
+        new ModDownloaderWindow(_profilePath).Show();
     }
 }

@@ -83,6 +83,9 @@
         <Compile Include="EditWindow.xaml..cs">
           <DependentUpon>EditWindow.xaml</DependentUpon>
         </Compile>
+        <Compile Include="ModDownloaderWindow.xaml.cs">
+          <DependentUpon>ModDownloaderWindow.xaml</DependentUpon>
+        </Compile>
         <Compile Include="Utilities.cs" />
         <Page Include="MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
@@ -97,6 +100,7 @@
             <SubType>Code</SubType>
         </Compile>
         <Page Include="EditWindow.xaml" />
+        <Page Include="ModDownloaderWindow.xaml" />
         <Page Include="ModManagerWindow.xaml" />
     </ItemGroup>
     <ItemGroup>
@@ -164,6 +168,11 @@
     </ItemGroup>
     <ItemGroup>
       <Resource Include="Resources\close.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
+    <ItemGroup>
+      <Resource Include="Resources\curseforge.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
     </ItemGroup>

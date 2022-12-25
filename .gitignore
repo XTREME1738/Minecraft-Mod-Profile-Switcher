@@ -1,6 +1,7 @@
 ﻿Release/
 Debug/
 obj/
+*.pdb
 
 # JetBrains Rider
 .idea/

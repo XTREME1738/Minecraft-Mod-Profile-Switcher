@@ -84,8 +84,9 @@ public partial class ModManagerWindow
     private readonly string _profilePath;
     private readonly string _profileVersion;
     private readonly string _tmpPath;
+    private readonly MainWindow _window;
 
-    public ModManagerWindow(string profilePath, string profileName)
+    public ModManagerWindow(string profilePath, string profileName, MainWindow window)
     {
         InitializeComponent();
         _profilePath = profilePath;
@@ -98,6 +99,8 @@ public partial class ModManagerWindow
             "Profile Game Version: " + _profileVersion;
         ProfileNameTextBox.Text =
             "Profile Name: " + profileName;
+        _window = window;
+        window.ManageModsButton.IsEnabled = false;
     }
 
     private void ModListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -197,9 +200,6 @@ public partial class ModManagerWindow
         if (_modList.ContainsKey(modId))
         {
             var values = _modList[modId];
-            MessageBox.Show(values.Item1, "x");
-            MessageBox.Show(values.Item2, "y");
-            MessageBox.Show(modFilePath, "z");
             var result = MessageBox.Show("A mod with that id already exists would you like to overwrite it?\nCurrent Mod Version: " + values.Item1 + ".\nNew Mod Version: " + modVersion, "Continue?",
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No) return;
@@ -304,5 +304,15 @@ public partial class ModManagerWindow
         mod.Enabled = false;
         DisableModButton.IsEnabled = false;
         EnableModButton.IsEnabled = true;
+    }
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private void ModManagerWindow_Closing(object sender, CancelEventArgs e)
+    {
+        _window.ManageModsButton.IsEnabled = true;
     }
 }

@@ -1,7 +1,10 @@
 ﻿<Window x:Class="Minecraft_Profile_Switcher.ModManagerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Mod Manager" Height="400" Width="640" MinWidth="700" Icon="Resources/icon.ico">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Mod Manager" Height="400" Width="640" MinWidth="700" Icon="Resources/icon.ico" Closing="ModManagerWindow_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
@@ -60,5 +63,11 @@
                 </StackPanel>
             </Button>
         </StackPanel>
+        <Button Grid.Row="2" Click="CloseButton_Click" Height="25" HorizontalAlignment="Right" Margin="0, 0, 5, 0">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Resources/close.png" />
+                <TextBlock Text="Close" Margin="5,0,0,0"/>
+            </StackPanel>
+        </Button>
     </Grid>
 </Window>

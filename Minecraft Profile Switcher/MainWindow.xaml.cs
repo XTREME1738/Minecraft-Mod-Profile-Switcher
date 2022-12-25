@@ -54,7 +54,7 @@ namespace Minecraft_Profile_Switcher
         {
             var selectedProfile = (string)ProfileComboBox.SelectedItem;
             var selectedProfilePath = Path.Combine(_profilesDirectory, selectedProfile);
-            var modManagerWindow = new ModManagerWindow(selectedProfilePath, selectedProfile);
+            var modManagerWindow = new ModManagerWindow(selectedProfilePath, selectedProfile, this);
             modManagerWindow.Show();
         }
         
@@ -346,6 +346,7 @@ namespace Minecraft_Profile_Switcher
                 return;
             }
 
+            Directory.CreateDirectory(newProfilePath);
             if (Path.GetExtension(filePath) == ".zip")
             {
                 ZipFile.ExtractToDirectory(filePath, newProfilePath);

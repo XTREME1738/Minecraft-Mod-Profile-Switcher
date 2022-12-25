@@ -134,8 +134,6 @@ public partial class ModManagerWindow
     private List<string> ReadZipVerAlt(string modFile, string modTmpDir)
     {
         var zip = ZipFile.Read(modFile);
-        var version = "";
-        var gameVersion = "";
         var returnInfo = new List<string>();
         foreach (var item in zip.Entries)
         {
@@ -143,6 +141,8 @@ public partial class ModManagerWindow
             item.Extract(modTmpDir);
             var jsonString = File.ReadAllText(Path.Combine(modTmpDir, item.FileName));
             dynamic jsonObject = JsonConvert.DeserializeObject(jsonString);
+            string version;
+            string gameVersion;
             if (jsonObject == null)
             {
                 version = "???";

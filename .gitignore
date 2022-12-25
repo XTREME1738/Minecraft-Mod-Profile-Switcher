@@ -1,6 +1,6 @@
 ﻿Debug/
 Release/
-obj
+obj/
 
 # JetBrains Rider
 .idea/

@@ -116,64 +116,6 @@ public partial class ModManagerWindow
         DisableModButton.IsEnabled = ModListView.SelectedItem != null && _selectedItem.Enabled;
     }
 
-    private static string ReadZip(string modFile, string modTmpDir)
-    {
-        var jsonString = "";
-        var zip = ZipFile.Read(modFile);
-        foreach (var item in zip.Entries)
-        {
-            if (!item.FileName.Contains("mcmod.info")) continue;
-            item.Extract(modTmpDir);
-            jsonString = File.ReadAllText(Path.Combine(modTmpDir, item.FileName));
-        }
-
-        zip.Dispose();
-        return jsonString;
-    }
-
-    private static List<string> ReadZipVerAlt(string modFile, string modTmpDir)
-    {
-        var zip = ZipFile.Read(modFile);
-        var returnInfo = new List<string>();
-        foreach (var item in zip.Entries)
-        {
-            if (!item.FileName.Contains("fml_cache_annotation.json")) continue;
-            item.Extract(modTmpDir);
-            var jsonString = File.ReadAllText(Path.Combine(modTmpDir, item.FileName));
-            dynamic jsonObject = JsonConvert.DeserializeObject(jsonString);
-            string version;
-            string gameVersion;
-            if (jsonObject == null)
-            {
-                version = "???";
-                gameVersion = "???";
-                returnInfo.Add(version);
-                returnInfo.Add(gameVersion);
-                zip.Dispose();
-                return returnInfo;
-            }
-
-            var obj = JObject.Parse(jsonString);
-            foreach (var property in obj)
-            {
-                version = property.Value != null
-                    ? jsonObject[property.Key]["annotations"][0]["values"]["version"]["value"].ToString()
-                    : "???";
-                gameVersion = property.Value != null
-                    ? jsonObject[property.Key]["annotations"][0]["values"]["acceptedMinecraftVersions"]["value"]
-                        .ToString()
-                    : "???";
-                if (version == null) continue;
-                returnInfo.Add(version);
-                returnInfo.Add(gameVersion);
-                break;
-            }
-        }
-
-        zip.Dispose();
-        return returnInfo;
-    }
-
     private void LoadMods()
     {
         ReloadModsButton.IsEnabled = false;
@@ -390,6 +332,6 @@ public partial class ModManagerWindow
 
     private void CurseDownloader_Click(object sender, RoutedEventArgs e)
     {
-        new ModDownloaderWindow(_profilePath, _profileVersion).Show();
+        new ModDownloaderWindow(_profilePath, _profileVersion, _modList, _tmpPath).Show();
     }
 }

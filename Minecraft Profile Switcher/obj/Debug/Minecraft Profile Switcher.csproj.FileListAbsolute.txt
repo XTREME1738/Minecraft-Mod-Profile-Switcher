@@ -22,10 +22,12 @@ C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switch
 C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\EditWindow.baml
 C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\ModDownloaderWindow.baml
 C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\ModManagerWindow.baml
+C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\SearchSettingsWindow.baml
 C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\MainWindow.g.cs
 C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\EditWindow.g.cs
 C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\ModDownloaderWindow.g.cs
 C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\ModManagerWindow.g.cs
+C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\SearchSettingsWindow.g.cs
 C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\App.g.cs
 C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\Minecraft_Profile_Switcher_MarkupCompile.cache
 C:\Users\Owner\RiderProjects\Minecraft Profile Switcher\Minecraft Profile Switcher\obj\Debug\Minecraft_Profile_Switcher.g.resources

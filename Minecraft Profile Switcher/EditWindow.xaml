@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="NameInputWindow" Height="150" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="Resources/icon.ico">
+        Title="NameInputWindow" Height="150" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        Icon="Resources/icon.ico">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -14,7 +15,8 @@
         </Grid.RowDefinitions>
         <Label x:Name="QuestionLabel" Content="" HorizontalAlignment="Center" />
         <TextBox x:Name="ResponseTextBox" Text="New Name" Grid.Row="1" HorizontalAlignment="Stretch" Height="25" />
-        <TextBox x:Name="MinecraftVersionTextBox" Grid.Row="2" HorizontalAlignment="Stretch" Margin="0,5,0,0" Height="25"/>
+        <TextBox x:Name="MinecraftVersionTextBox" Grid.Row="2" HorizontalAlignment="Stretch" Margin="0,5,0,0"
+                 Height="25" />
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
             <Button x:Name="OkButton" Content="OK" Click="OKButton_Click" Height="25" />
             <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" Height="25" />

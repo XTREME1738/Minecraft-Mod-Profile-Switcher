@@ -4,15 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Minecraft Mod Profile Switcher" Height="140" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="Resources/icon.ico">
+        Title="Minecraft Mod Profile Switcher" Height="170" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="Resources/icon.ico">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="275"/>
@@ -52,6 +53,12 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-        <Label x:Name="ActiveProfileLabel" Content="Active Profile: None" Grid.Row="3" HorizontalAlignment="Center"/>
+        <Button HorizontalAlignment="Center" Margin="0, 5, 0, 0" Click="CheckForUpdateButton_Click" Height="25" Grid.Row="3">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Resources/use.png"></Image>
+                <TextBlock Margin="5,0,0,0">Check For Updates</TextBlock>
+            </StackPanel>
+        </Button>
+        <Label x:Name="ActiveProfileLabel" Content="Active Profile: None" Grid.Row="4" HorizontalAlignment="Center"/>
     </Grid>
 </Window>

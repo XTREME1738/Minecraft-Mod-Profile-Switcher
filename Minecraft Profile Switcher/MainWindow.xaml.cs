@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
@@ -12,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
+using Newtonsoft.Json.Linq;
 using static Minecraft_Profile_Switcher.Utilities;
 
 namespace Minecraft_Profile_Switcher
@@ -24,6 +26,7 @@ namespace Minecraft_Profile_Switcher
         private static string _activeProfileLinkPath;
         private static string _activeProfilePath;
         private List<string> _profileNames;
+        private const string Version = "1.0.0";
 
         public MainWindow()
         {
@@ -34,12 +37,12 @@ namespace Minecraft_Profile_Switcher
                 MessageBox.Show("This program must be run as an administrator.");
                 Environment.Exit(1);
             }
-
             if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                     "ModProfileSwitcher", "tmp")))
                 Directory.CreateDirectory(Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                     "ModProfileSwitcher", "tmp"));
+            UpdateCheck();
             LoadProfiles();
             CheckExists();
             ButtonsEnabled(false);
@@ -105,6 +108,21 @@ namespace Minecraft_Profile_Switcher
             CheckActive();
         }
 
+        private static bool UpdateCheck()
+        {
+            var wc = new WebClient();
+            wc.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:100.0) Gecko/20100101 Firefox/100.0");
+            var response = wc.DownloadString("https://api.github.com/repos/00-XPRT-00/Minecraft-Mod-Profile-Switcher/releases");
+            var latestRelease = JArray.Parse(response)[0];
+            if (latestRelease["tag_name"]!.ToString() == $"v{Version}") return false;
+            var result = MessageBox.Show("A new version is available.\nWould you like to update?", "Update Available",
+                MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (result == MessageBoxResult.No) return true;
+            Process.Start("https://github.com/00-XPRT-00/Minecraft-Mod-Profile-Switcher/releases/latest");
+            Environment.Exit(0);
+            return true;
+        }
+        
         private void ButtonsEnabled(bool enabled)
         {
             DeleteButton.IsEnabled = enabled;
@@ -366,6 +384,14 @@ namespace Minecraft_Profile_Switcher
             }
             var selectedProfilePath = Path.Combine(_profilesDirectory, selectedProfile);
             Process.Start(selectedProfilePath);
+        }
+
+        private void CheckForUpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (UpdateCheck() == false)
+            {
+                MessageBox.Show("No updates available", "Up to date!", MessageBoxButton.OK, MessageBoxImage.Information);
+            } 
         }
     }
 }

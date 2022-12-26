@@ -131,7 +131,7 @@ public partial class ModManagerWindow
         return jsonString;
     }
 
-    private List<string> ReadZipVerAlt(string modFile, string modTmpDir)
+    private static List<string> ReadZipVerAlt(string modFile, string modTmpDir)
     {
         var zip = ZipFile.Read(modFile);
         var returnInfo = new List<string>();
@@ -156,7 +156,6 @@ public partial class ModManagerWindow
             var obj = JObject.Parse(jsonString);
             foreach (var property in obj)
             {
-                MessageBox.Show(_profileVersion);
                 version = property.Value != null
                     ? jsonObject[property.Key]["annotations"][0]["values"]["version"]["value"].ToString()
                     : "???";
@@ -391,6 +390,6 @@ public partial class ModManagerWindow
 
     private void CurseDownloader_Click(object sender, RoutedEventArgs e)
     {
-        new ModDownloaderWindow(_profilePath).Show();
+        new ModDownloaderWindow(_profilePath, _profileVersion).Show();
     }
 }

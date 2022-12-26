@@ -1,33 +1,63 @@
 ﻿<Window x:Class="Minecraft_Profile_Switcher.ModDownloaderWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-        Title="CurseForge Mods" Height="450" Width="950">
+        Title="Mod Downloader" Height="400" Width="575">
     <Grid>
-        <ListView x:Name="ModListView" SelectionChanged="ModListView_SelectionChanged">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <TextBox x:Name="SearchTextBox" Width="490" Margin="5, 0" Height="25"></TextBox>
+            <Button x:Name="SearchButton" Click="SearchButton_Click" ToolTip="Search" Height="25" Margin="0, 0, 0, 2">
+                <Image Source="Resources/search.png" />
+            </Button>
+            <Button x:Name="SearchSettingsButton" Click="SearchSettingsButton_Click" ToolTip="Search Settings" Height="25" Margin="5, 0, 0, 2">
+                <Image Source="Resources/settings.png" />
+            </Button>
+        </StackPanel>
+        <ListView x:Name="ModListView" Grid.Row="1" SelectionChanged="ModListView_SelectionChanged">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Mod Name" DisplayMemberBinding="{Binding Name}" Width="200" />
-                    <GridViewColumn Header="Mod Description" DisplayMemberBinding="{Binding Description}" Width="328" />
-                    <GridViewColumn Header="Mod Version" DisplayMemberBinding="{Binding Version}" Width="130" />
-                    <GridViewColumn Header="Mod Downloads" DisplayMemberBinding="{Binding Downloads}" Width="150" />
-                    <GridViewColumn Header="Install Mod" Width="120">
+                    <GridViewColumn Header="Mod Image" Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Width="80" Click="InstallButton_Click" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10, 5">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="Resources/use.png" />
-                                        <TextBlock Text="Install" Margin="5,0,0,0"/>
-                                    </StackPanel>
-                                </Button>
+                                <Image Source="{Binding ImageUrl}" Width="50" Height="50" Margin="10, 5" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Mod Name" DisplayMemberBinding="{Binding ModName}" Width="270" />
+                    <GridViewColumn Header="Downloads" DisplayMemberBinding="{Binding Downloads}" Width="100" />
+                    <GridViewColumn Header="Installed" Width="80">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Installed}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button x:Name="InstallModButton" Click="InstallModButton_Click" ToolTip="Install The Selected Mod" Margin="5, 0, 0, 0">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Resources/use.png" />
+                    <TextBlock Text="Install" Margin="5,0,0,0"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="UninstallModButton" Click="UninstallModButton_Click" ToolTip="Uninstall The Selected Mod" Margin="5, 0, 0, 0">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Resources/delete.png" />
+                    <TextBlock Text="Uninstall" Margin="5,0,0,0"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="VisitModPageButton" Click="VisitModPageButton_Click" ToolTip="Visit The Selected Mods Page On CurseForge" Margin="5, 0, 0, 0">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Resources/open_link.png" />
+                    <TextBlock Text="Visit" Margin="5,0,0,0"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

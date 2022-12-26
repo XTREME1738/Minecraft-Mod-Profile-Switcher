@@ -86,6 +86,9 @@
         <Compile Include="ModDownloaderWindow.xaml.cs">
           <DependentUpon>ModDownloaderWindow.xaml</DependentUpon>
         </Compile>
+        <Compile Include="SearchSettingsWindow.xaml..cs">
+          <DependentUpon>SearchSettingsWindow.xaml</DependentUpon>
+        </Compile>
         <Compile Include="Utilities.cs" />
         <Page Include="MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
@@ -102,6 +105,7 @@
         <Page Include="EditWindow.xaml" />
         <Page Include="ModDownloaderWindow.xaml" />
         <Page Include="ModManagerWindow.xaml" />
+        <Page Include="SearchSettingsWindow.xaml" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="ModManagerWindow.xaml.cs">
@@ -173,6 +177,21 @@
     </ItemGroup>
     <ItemGroup>
       <Resource Include="Resources\curseforge.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
+    <ItemGroup>
+      <Resource Include="Resources\search.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
+    <ItemGroup>
+      <Resource Include="Resources\open_link.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
+    <ItemGroup>
+      <Resource Include="Resources\settings.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
     </ItemGroup>
